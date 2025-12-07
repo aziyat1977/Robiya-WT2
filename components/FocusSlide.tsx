@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import LessonVisual, { VisualVariant } from './LessonVisual';
 
 interface VocabItem {
   term: string;
@@ -14,6 +15,7 @@ interface FocusSlideProps {
   theme: string;
   vocab?: VocabItem[];
   animated?: boolean;
+  visualVariant?: VisualVariant; // New prop
   onVocabLearned?: () => void; // Callback for XP
 }
 
@@ -25,6 +27,7 @@ const FocusSlide: React.FC<FocusSlideProps> = ({
   theme,
   vocab = [],
   animated = false,
+  visualVariant,
   onVocabLearned
 }) => {
   const [stage, setStage] = useState(animated ? 0 : 100);
@@ -143,14 +146,14 @@ const FocusSlide: React.FC<FocusSlideProps> = ({
         <div className={`absolute -inset-4 bg-gradient-to-r ${accentColor} opacity-20 blur-xl rounded-[2rem] transition-all duration-1000 ${stage > 0 ? 'scale-100' : 'scale-90'}`}></div>
 
         {/* Main Card */}
-        <div className="relative glass-panel rounded-2xl p-6 md:p-8 shadow-xl overflow-hidden bg-white/60 min-h-[50vh] flex flex-col justify-center">
+        <div className="relative glass-panel rounded-2xl p-6 md:p-8 shadow-xl overflow-hidden bg-white/60 min-h-[60vh] md:min-h-[50vh] flex flex-col">
           
           {/* Decorative shapes */}
           <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${accentColor} opacity-10 rounded-bl-full transition-transform duration-1000 ${stage > 0 ? 'translate-x-0' : 'translate-x-full'}`} />
 
           {/* Translation Controls (Top Right) */}
           {vocab.length > 0 && (
-            <div className="absolute top-4 right-4 flex gap-2 z-30">
+            <div className="absolute top-4 left-4 md:left-auto md:right-4 flex gap-2 z-30">
               <button 
                 onClick={(e) => { e.stopPropagation(); setActiveLang(activeLang === 'ru' ? null : 'ru'); }}
                 className={`px-3 py-1 rounded-lg text-xs font-bold shadow-sm transition-all border border-white/50 ${activeLang === 'ru' ? 'bg-indigo-600 text-white scale-105' : 'bg-white/80 text-gray-600 hover:bg-white'}`}
@@ -168,7 +171,7 @@ const FocusSlide: React.FC<FocusSlideProps> = ({
 
           {/* Translation Pop-up Panel */}
           {activeLang && vocab.length > 0 && (
-            <div className="absolute top-14 right-4 bg-white/95 p-5 rounded-2xl shadow-2xl z-40 w-64 backdrop-blur-xl border border-white/50 animate-pop-in">
+            <div className="absolute top-14 left-4 md:left-auto md:right-4 bg-white/95 p-5 rounded-2xl shadow-2xl z-40 w-64 backdrop-blur-xl border border-white/50 animate-pop-in">
               <h4 className="text-[10px] font-black uppercase text-gray-400 mb-3 tracking-widest border-b border-gray-100 pb-2">
                 {activeLang === 'ru' ? 'Russian Translation' : 'Uzbek Translation'}
               </h4>
@@ -185,31 +188,39 @@ const FocusSlide: React.FC<FocusSlideProps> = ({
             </div>
           )}
 
-          {/* Header (Stage 1) */}
-          <div className={`relative z-10 text-center mb-4 transition-all duration-700 transform ${stage >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
-            <h3 className="text-xs font-bold tracking-[0.2em] uppercase text-gray-400 mb-1">{sectionTitle}</h3>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 leading-tight shimmer-text">
-              {sectionSubtitle || label}
-            </h1>
-          </div>
+          {/* HEADER SECTION WITH 3D VISUAL */}
+          <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-4 mb-6 relative z-10">
+             
+             {/* Text Header */}
+             <div className={`text-center md:text-left transition-all duration-700 transform flex-1 ${stage >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
+               <h3 className="text-xs font-bold tracking-[0.2em] uppercase text-gray-400 mb-2">{sectionTitle}</h3>
+               <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight shimmer-text mb-3">
+                 {sectionSubtitle || label}
+               </h1>
+               {/* Label Chip */}
+               <div className={`inline-flex px-4 py-1.5 rounded-full bg-gradient-to-r ${accentColor} text-white font-bold shadow-md shadow-indigo-500/30 items-center gap-2 text-sm transition-all duration-700 delay-100 ${stage >= 2 ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
+                 <span>✨</span>
+                 {label}
+               </div>
+             </div>
 
-          {/* Label Chip (Stage 2) */}
-          <div className={`flex justify-center mb-6 transition-all duration-700 delay-100 transform ${stage >= 2 ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
-            <div className={`px-4 py-1.5 rounded-full bg-gradient-to-r ${accentColor} text-white font-bold shadow-md shadow-indigo-500/30 flex items-center gap-2 text-sm`}>
-              <span>✨</span>
-              {label}
-            </div>
+             {/* 3D Visual Asset (Hidden on very small screens if needed, or scaled) */}
+             {visualVariant && (
+               <div className={`transition-all duration-1000 transform ${stage >= 1 ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-50 rotate-12'}`}>
+                  <LessonVisual variant={visualVariant} />
+               </div>
+             )}
           </div>
 
           {/* Content (Stage 3+) */}
-          <div className="space-y-4">
+          <div className="space-y-4 flex-grow flex flex-col justify-center">
             {contentArray.map((line, idx) => (
               <div 
                 key={idx}
-                className={`font-essay text-lg md:text-xl leading-relaxed text-gray-800 transition-all duration-700 transform ${stage >= 3 + idx ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}
+                className={`font-essay text-xl md:text-2xl leading-relaxed text-gray-800 transition-all duration-700 transform ${stage >= 3 + idx ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}
               >
-                <div className="flex gap-3">
-                  <div className={`w-1 min-h-full rounded-full bg-gradient-to-b ${accentColor} opacity-30 flex-shrink-0`}></div>
+                <div className="flex gap-4">
+                  <div className={`w-1.5 min-h-full rounded-full bg-gradient-to-b ${accentColor} opacity-40 flex-shrink-0`}></div>
                   <p>{renderContent(line)}</p>
                 </div>
               </div>
@@ -218,7 +229,7 @@ const FocusSlide: React.FC<FocusSlideProps> = ({
 
           {/* Vocab Prompt (Last Stage) */}
           {vocab.length > 0 && (
-             <div className={`mt-6 pt-4 border-t border-gray-200/50 transition-all duration-1000 transform ${stage >= (3 + contentArray.length) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+             <div className={`mt-auto pt-6 border-t border-gray-200/50 transition-all duration-1000 transform ${stage >= (3 + contentArray.length) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
                <p className="text-center text-gray-400 text-xs font-semibold uppercase tracking-widest animate-pulse">
                  Hover over highlighted words or click Ru/Uz for help
                </p>
@@ -255,7 +266,7 @@ const VocabTooltip: React.FC<{term: string, ru: string, uz: string, accent: stri
         <span className={`absolute inset-0 bg-gradient-to-r ${accent} opacity-0 group-hover:opacity-20 rounded -z-10 transition-opacity`}></span>
       </span>
       
-      {/* Tooltip Popup - Positioned Higher */}
+      {/* Tooltip Popup */}
       <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-40 bg-gray-900 text-white p-3 rounded-xl shadow-2xl transition-all duration-300 pointer-events-none z-50 ${isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
         <div className="text-center">
           <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Translation</div>
@@ -263,7 +274,6 @@ const VocabTooltip: React.FC<{term: string, ru: string, uz: string, accent: stri
           <div className="text-xs text-gray-300 italic">{uz}</div>
           {collected && <div className="mt-1 text-xs font-bold text-green-400 animate-bounce">+10 XP</div>}
         </div>
-        {/* Arrow */}
         <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-2 border-4 border-transparent border-t-gray-900"></div>
       </div>
     </span>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import FocusSlide from '../components/FocusSlide';
 import QuizSlide from '../components/QuizSlide';
+import { VisualVariant } from '../components/LessonVisual';
 
 // -- GAMIFICATION TYPES --
 type StepType = 'content' | 'quiz';
@@ -20,6 +21,7 @@ interface LessonStep {
   content?: string | string[];
   theme?: string;
   vocab?: VocabItem[];
+  visualVariant?: VisualVariant; // Added visual variant type
   // Quiz props
   question?: string;
   options?: string[];
@@ -39,6 +41,7 @@ const buildSteps = (): LessonStep[] => {
     sectionTitle: "Lead-In",
     sectionSubtitle: "Visualizing the Conflict",
     label: "Scenario",
+    visualVariant: "coffee-cup",
     content: "Imagine your favorite local coffee spot. Now imagine it turned into a generic chain store. This transformation is happening globally, sparking a debate about **identity** versus **convenience**.",
     theme: "indigo",
     vocab: [
@@ -78,6 +81,7 @@ const buildSteps = (): LessonStep[] => {
     sectionTitle: "Mission Start",
     sectionSubtitle: "The Coffee Wars",
     label: "Task 2 Analysis",
+    visualVariant: "blueprint",
     content: "Welcome, Agent. Your target is a Band 9 Essay regarding the threat of global coffee chains. We will **deconstruct** the argument piece by piece to understand its **structure**.",
     theme: "indigo",
     vocab: [
@@ -117,6 +121,7 @@ const buildSteps = (): LessonStep[] => {
     sectionTitle: "Introduction",
     sectionSubtitle: "Setting the Scene",
     label: "Global Context",
+    visualVariant: "radar",
     content: [
       "The **proliferation** of global coffee chains has transformed city landscapes.",
       "It is **undeniable** that they create jobs, but at what cost?"
@@ -159,6 +164,7 @@ const buildSteps = (): LessonStep[] => {
     sectionTitle: "Concept Map",
     sectionSubtitle: "Local vs Global",
     label: "The Contrast",
+    visualVariant: "clones",
     content: [
       "**Local**: Unique, soulful, community hub.",
       "**Global**: **Standardized**, **efficient**, impersonal."
@@ -201,6 +207,7 @@ const buildSteps = (): LessonStep[] => {
     sectionTitle: "Critical Hit",
     sectionSubtitle: "The Thesis",
     label: "Strong Opinion",
+    visualVariant: "target",
     content: "We **strongly agree** that their **aggressive** market presence poses a **profound** threat.",
     theme: "red",
     vocab: [
@@ -240,6 +247,7 @@ const buildSteps = (): LessonStep[] => {
     sectionTitle: "Battleground 1",
     sectionSubtitle: "Economic Scale",
     label: "Unfair Fight",
+    visualVariant: "scale",
     content: "The **economic scale** of chains creates an **unfair competitive advantage**.",
     theme: "red",
     vocab: [
@@ -279,6 +287,7 @@ const buildSteps = (): LessonStep[] => {
     sectionTitle: "Evidence",
     sectionSubtitle: "Bulk Buying",
     label: "The Mechanism",
+    visualVariant: "crate",
     content: "Chains buy in **bulk**, lowering costs. This **drastically** lowers their operational costs compared to small cafes.",
     theme: "red",
     vocab: [
@@ -318,6 +327,7 @@ const buildSteps = (): LessonStep[] => {
     sectionTitle: "Consequence",
     sectionSubtitle: "Price Wars",
     label: "Thin Margins",
+    visualVariant: "coins",
     content: "With **thin profit margins**, locals cannot match the prices. The **financial power** of giants wins.",
     theme: "red",
     vocab: [
@@ -357,6 +367,7 @@ const buildSteps = (): LessonStep[] => {
     sectionTitle: "Battleground 2",
     sectionSubtitle: "Culture",
     label: "Homogenization",
+    visualVariant: "gray-wash",
     content: "Dominance leads to **homogenization**, **eroding** the unique character of cities.",
     theme: "green",
     vocab: [
@@ -396,6 +407,7 @@ const buildSteps = (): LessonStep[] => {
     sectionTitle: "Metaphor",
     sectionSubtitle: "City DNA",
     label: "Identity",
+    visualVariant: "dna",
     content: "Chains are **uniform**; locals reflect the **distinct flavour** of the neighborhood.",
     theme: "green",
     vocab: [
@@ -435,6 +447,7 @@ const buildSteps = (): LessonStep[] => {
     sectionTitle: "Social Impact",
     sectionSubtitle: "Community Hubs",
     label: "Loss of Connection",
+    visualVariant: "hub",
     content: "Locals act as a **community hub**; Chains are designed for **efficient turnover**.",
     theme: "green",
     vocab: [
@@ -474,6 +487,7 @@ const buildSteps = (): LessonStep[] => {
     sectionTitle: "The Verdict",
     sectionSubtitle: "Final Judgment",
     label: "Guilty",
+    visualVariant: "gavel",
     content: "The threat is **harmful**. We must **justify** protecting local diversity.",
     theme: "yellow",
     vocab: [
@@ -513,6 +527,7 @@ const buildSteps = (): LessonStep[] => {
     sectionTitle: "Final Thought",
     sectionSubtitle: "Prediction",
     label: "The Future",
+    visualVariant: "horizon",
     content: "If unchecked, we face the **consequence** of losing our cities' **character**.",
     theme: "purple",
     vocab: [
@@ -861,7 +876,7 @@ const Lesson1: React.FC = () => {
 
       {/* Main Stage - Centered & Flexible */}
       <div className="flex-1 flex items-center justify-center p-4 overflow-hidden relative">
-        <div className="w-full max-w-3xl">
+        <div className="w-full max-w-4xl">
           <div key={currentStep}>
             {activeData.type === 'content' ? (
               <FocusSlide 
@@ -871,6 +886,7 @@ const Lesson1: React.FC = () => {
                 content={activeData.content || ""}
                 theme={activeData.theme || "indigo"}
                 animated={true}
+                visualVariant={activeData.visualVariant}
                 onVocabLearned={handleVocabLearned}
               />
             ) : (
