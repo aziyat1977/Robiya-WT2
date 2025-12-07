@@ -70,29 +70,31 @@ const QuizSlide: React.FC<QuizSlideProps> = ({
         />
       ))}
 
-      {/* Main Container - Constrained Height */}
-      <div className={`glass-panel rounded-2xl p-4 md:p-6 shadow-2xl transition-all duration-700 bg-white/80 backdrop-blur-xl border border-white/60 flex flex-col max-h-full overflow-y-auto ${stage >= 1 ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+      {/* Main Container - HEIGHT FULL */}
+      <div className={`glass-panel rounded-2xl p-4 md:p-6 shadow-2xl transition-all duration-700 bg-white/80 backdrop-blur-xl border border-white/60 flex flex-col h-full overflow-y-auto ${stage >= 1 ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
         
         {/* HEADER */}
-        <div className="flex-none flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow text-white font-bold text-xs">
+        <div className="flex-none flex items-center justify-between mb-2">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow text-white font-bold text-sm">
               ?
             </div>
             <div>
-              <span className="text-[8px] font-black tracking-[0.2em] text-gray-400 uppercase block">Challenge</span>
-              <span className="text-xs font-bold text-gray-800">Knowledge Check</span>
+              <span className="text-[9px] font-black tracking-[0.2em] text-gray-400 uppercase block">Challenge</span>
+              <span className="text-sm font-bold text-gray-800">Knowledge Check</span>
             </div>
           </div>
-          <div className="h-1 w-16 bg-gray-100 rounded-full overflow-hidden shadow-inner">
+          <div className="h-1.5 w-20 bg-gray-100 rounded-full overflow-hidden shadow-inner">
              <div className="h-full bg-indigo-500 rounded-full animate-[liquid-fill_3s_infinite_alternate] w-full origin-left"></div>
           </div>
         </div>
 
         {/* QUESTION */}
-        <h2 className="flex-none text-lg md:text-xl font-bold text-gray-900 mb-4 leading-snug">
-          {question}
-        </h2>
+        <div className="flex-grow flex items-center mb-3">
+          <h2 className="text-lg md:text-xl font-bold text-gray-900 leading-snug">
+            {question}
+          </h2>
+        </div>
 
         {/* OPTIONS GRID */}
         <div className={`flex-shrink-0 grid grid-cols-1 gap-2 transition-all duration-700 delay-200 ${stage >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
@@ -117,17 +119,17 @@ const QuizSlide: React.FC<QuizSlideProps> = ({
                 key={idx}
                 onClick={() => handleSelect(idx)}
                 disabled={hasSubmitted}
-                className={`group relative w-full p-3 text-left rounded-lg border transition-all duration-200 active:scale-95 ${stateClass}`}
+                className={`group relative w-full p-3 text-left rounded-xl border transition-all duration-200 active:scale-95 ${stateClass}`}
               >
-                <div className="flex items-center gap-3">
-                  <div className={`flex-shrink-0 w-6 h-6 rounded flex items-center justify-center text-[10px] font-black transition-colors shadow-sm ${
+                <div className="flex items-center gap-4">
+                  <div className={`flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center text-xs font-black transition-colors shadow-sm ${
                     hasSubmitted && idx === correctAnswer ? 'bg-emerald-500 text-white' : 
                     hasSubmitted && selected === idx ? 'bg-rose-500 text-white' :
                     'bg-gray-100 text-gray-500 group-hover:bg-indigo-600 group-hover:text-white'
                   }`}>
                     {icon}
                   </div>
-                  <span className="text-sm font-medium text-gray-800 leading-snug">{option}</span>
+                  <span className="text-sm md:text-base font-medium text-gray-800 leading-snug">{option}</span>
                 </div>
               </button>
             );
@@ -139,7 +141,7 @@ const QuizSlide: React.FC<QuizSlideProps> = ({
           <div className="flex-none mt-4 overflow-hidden rounded-xl animate-[pop-in_0.5s_cubic-bezier(0.175,0.885,0.32,1.275)_forwards]">
             <div className={`p-3 ${selected === correctAnswer ? 'bg-gradient-to-r from-emerald-500 to-teal-600' : 'bg-gradient-to-r from-rose-500 to-orange-600'} text-white shadow-xl relative overflow-hidden`}>
               <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,white_1px,transparent_1px)] bg-[size:10px_10px]"></div>
-              <div className="flex items-start gap-2 relative z-10">
+              <div className="flex items-start gap-3 relative z-10">
                 <div className="text-xl filter drop-shadow-md animate-bounce">
                   {selected === correctAnswer ? '🌟' : '💡'}
                 </div>

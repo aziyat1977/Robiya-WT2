@@ -164,7 +164,7 @@ const FocusSlide: React.FC<FocusSlideProps> = ({
   const contentArray = Array.isArray(content) ? content : [content];
 
   return (
-    <div className="flex items-center justify-center py-2 perspective-container w-full h-full relative">
+    <div className="flex items-center justify-center py-1 perspective-container w-full h-full relative">
       
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none overflow-hidden">
          <div className="god-rays"></div>
@@ -174,13 +174,13 @@ const FocusSlide: React.FC<FocusSlideProps> = ({
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="w-full relative transition-transform duration-100 ease-out z-10 flex flex-col justify-center h-full"
+        className="w-full relative transition-transform duration-100 ease-out z-10 flex flex-col justify-center h-full max-h-full"
       >
         <div className={`absolute -inset-1 bg-gradient-to-r ${accentGradient} opacity-30 blur-2xl rounded-[2rem] transition-all duration-1000 ${stage > 0 ? 'scale-100' : 'scale-90'}`}></div>
 
-        {/* MAIN GLASS CARD - MAX HEIGHT FULL to respect container */}
+        {/* MAIN GLASS CARD - HEIGHT FULL */}
         <div 
-          className="relative glass-panel rounded-xl p-5 md:p-6 overflow-hidden flex flex-col max-h-full"
+          className="relative glass-panel rounded-xl p-4 md:p-6 overflow-hidden flex flex-col h-full"
           style={{
             background: `
               radial-gradient(
@@ -192,11 +192,11 @@ const FocusSlide: React.FC<FocusSlideProps> = ({
             `
           }}
         >
-          {/* HEADER SECTION - Compact */}
+          {/* HEADER SECTION - Compacted */}
           <div className="flex items-start justify-between gap-2 mb-2 relative z-10 flex-none">
              <div className="flex-1">
                <div className={`transition-all duration-700 ${stage >= 1 ? 'opacity-100' : 'opacity-0'}`}>
-                  <h3 className="text-[9px] font-black tracking-[0.2em] uppercase text-gray-400 mb-0.5">
+                  <h3 className="text-[10px] font-black tracking-[0.2em] uppercase text-gray-400 mb-0.5">
                     {sectionTitle}
                   </h3>
                </div>
@@ -215,14 +215,16 @@ const FocusSlide: React.FC<FocusSlideProps> = ({
              </div>
 
              {visualVariant && (
-               <div className={`flex-none transform transition-all duration-1000 ${stage >= 1 ? 'opacity-100 scale-75 translate-x-0' : 'opacity-0 scale-50 translate-x-10'}`}>
-                  <LessonVisual variant={visualVariant} />
+               <div className={`flex-none transform transition-all duration-1000 ${stage >= 1 ? 'opacity-100 scale-100 translate-x-0' : 'opacity-0 scale-50 translate-x-10'}`}>
+                  <div className="scale-75 origin-top-right">
+                    <LessonVisual variant={visualVariant} />
+                  </div>
                </div>
              )}
           </div>
 
-          {/* CONTENT SECTION - Flexible */}
-          <div className="space-y-2 flex-grow flex flex-col relative z-10 overflow-y-auto pr-1 overscroll-contain">
+          {/* CONTENT SECTION - Spaced out */}
+          <div className="flex-grow flex flex-col justify-center relative z-10 overflow-y-auto pr-1 overscroll-contain">
             
             {/* VIDEO PLAYER */}
             {videoUrl && (
@@ -234,20 +236,20 @@ const FocusSlide: React.FC<FocusSlideProps> = ({
                   muted
                   playsInline
                   loop 
-                  className="w-full h-auto max-h-[35vh] object-cover bg-black"
+                  className="w-full h-auto max-h-[30vh] object-cover bg-black"
                 />
               </div>
             )}
 
-            <div className="flex flex-col justify-center">
+            <div className="space-y-2">
               {contentArray.map((line, idx) => (
                 <div 
                   key={idx}
-                  className={`font-essay text-base md:text-lg leading-snug text-gray-800 transition-opacity duration-500 ${stage >= 3 + idx ? 'opacity-100' : 'opacity-0'}`}
+                  className={`font-essay text-base md:text-lg leading-relaxed text-gray-800 transition-opacity duration-500 ${stage >= 3 + idx ? 'opacity-100' : 'opacity-0'}`}
                 >
                   {stage >= 3 + idx && (
-                    <div className="flex gap-2 group mb-2">
-                      <div className={`w-0.5 mt-1 rounded-full bg-gradient-to-b ${accentGradient} opacity-30`}></div>
+                    <div className="flex gap-3 group">
+                      <div className={`w-0.5 mt-1.5 rounded-full bg-gradient-to-b ${accentGradient} opacity-30 h-full min-h-[1.5em]`}></div>
                       <div>{renderContent(line)}</div>
                     </div>
                   )}
@@ -256,22 +258,22 @@ const FocusSlide: React.FC<FocusSlideProps> = ({
             </div>
           </div>
 
-          {/* FOOTER AREA: Translation Buttons & Hint */}
+          {/* FOOTER AREA */}
           <div className={`flex-none mt-2 pt-2 border-t border-gray-200/50 flex justify-between items-center transition-all duration-1000 ${stage >= (3 + contentArray.length) ? 'opacity-100' : 'opacity-0'}`}>
-             <p className="text-gray-400 text-[8px] font-bold uppercase tracking-[0.2em] animate-pulse">
+             <p className="text-gray-400 text-[9px] font-bold uppercase tracking-[0.2em] animate-pulse">
                Interact with keywords
              </p>
 
-             {/* Translation UI - Bottom Right */}
+             {/* Translation UI */}
              {vocab.length > 0 && (
                 <div className="relative z-30">
-                  <div className="flex gap-1">
+                  <div className="flex gap-2">
                     {['ru', 'uz'].map((lang) => (
                       <button 
                         key={lang}
                         onClick={(e) => { e.stopPropagation(); setActiveLang(activeLang === lang ? null : lang as 'ru' | 'uz'); }}
                         className={`
-                          px-2 py-1 rounded-full text-[9px] font-black uppercase tracking-wider shadow-sm transition-all
+                          px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm transition-all
                           ${activeLang === lang 
                             ? `bg-gradient-to-r ${accentGradient} text-white` 
                             : 'bg-white/80 text-gray-500 hover:bg-gray-100'
@@ -285,12 +287,12 @@ const FocusSlide: React.FC<FocusSlideProps> = ({
                   
                   {/* Translation Panel Popup */}
                   {activeLang && (
-                    <div className="absolute bottom-full right-0 mb-2 bg-white/95 p-3 rounded-lg shadow-xl z-40 w-48 backdrop-blur-xl border border-white/60 animate-pop-in origin-bottom-right">
-                      <div className="space-y-2 max-h-40 overflow-y-auto">
+                    <div className="absolute bottom-full right-0 mb-3 bg-white/95 p-4 rounded-xl shadow-2xl z-40 w-56 backdrop-blur-xl border border-white/60 animate-pop-in origin-bottom-right">
+                      <div className="space-y-3 max-h-48 overflow-y-auto">
                         {vocab.map((v, i) => (
                           <div key={i}>
-                            <span className="font-bold text-gray-900 text-xs block mb-0.5">{v.term}</span>
-                            <span className={`text-xs block font-essay text-transparent bg-clip-text bg-gradient-to-r ${accentGradient}`}>
+                            <span className="font-bold text-gray-900 text-sm block mb-0.5">{v.term}</span>
+                            <span className={`text-sm block font-essay text-transparent bg-clip-text bg-gradient-to-r ${accentGradient}`}>
                               {activeLang === 'ru' ? v.ru : v.uz}
                             </span>
                           </div>
@@ -326,18 +328,18 @@ const VocabTooltip: React.FC<{term: string, ru: string, uz: string, accent: stri
       className="relative inline-block cursor-help mx-0.5 group align-baseline"
     >
       <span 
-        className={`relative z-10 font-bold border-b border-dashed border-gray-300 group-hover:border-transparent transition-all duration-300 px-0.5 rounded ${collected ? 'text-emerald-700 bg-emerald-50/50' : 'text-gray-900'}`}
+        className={`relative z-10 font-bold border-b-2 border-dashed border-gray-300 group-hover:border-transparent transition-all duration-300 px-0.5 rounded ${collected ? 'text-emerald-700 bg-emerald-50/50' : 'text-gray-900'}`}
       >
         {term}
         <span className={`absolute inset-0 bg-gradient-to-r ${accent} opacity-0 group-hover:opacity-10 rounded -z-10 transition-opacity`}></span>
       </span>
       
       {/* TOOLTIP */}
-      <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-32 bg-gray-900/95 text-white p-2 rounded-lg shadow-xl backdrop-blur-md pointer-events-none z-50 ${isHovered ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-95'}`}>
+      <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-40 bg-gray-900/95 text-white p-3 rounded-xl shadow-2xl backdrop-blur-md pointer-events-none z-50 ${isHovered ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-95'}`}>
         <div className="text-center">
-          <div className="font-bold text-xs mb-1 diamond-text">{term}</div>
-          <div className="h-px w-full bg-white/20 my-1"></div>
-          <div className="text-[10px] space-y-1">
+          <div className="font-bold text-sm mb-1 diamond-text">{term}</div>
+          <div className="h-px w-full bg-white/20 my-2"></div>
+          <div className="text-xs space-y-1.5">
              <div className="flex justify-between"><span className="text-gray-400">RU</span> <span>{ru}</span></div>
              <div className="flex justify-between"><span className="text-gray-400">UZ</span> <span>{uz}</span></div>
           </div>

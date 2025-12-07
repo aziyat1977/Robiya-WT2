@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import FocusSlide from '../components/FocusSlide';
 import QuizSlide from '../components/QuizSlide';
 import { VisualVariant } from '../components/LessonVisual';
+// Removed LessonBackground import as requested to remove the coffee background
 
 // -- GAMIFICATION TYPES --
 type StepType = 'content' | 'quiz';
@@ -23,6 +24,7 @@ interface LessonStep {
   vocab?: VocabItem[];
   visualVariant?: VisualVariant; 
   videoUrl?: string;
+  bgVariant?: any; // Kept in type definition to avoid breaking existing data structure, but unused in render
   // Quiz props
   question?: string;
   options?: string[];
@@ -668,19 +670,9 @@ const Lesson1: React.FC = () => {
   const [xp, setXp] = useState(0);
   const [streak, setStreak] = useState(0);
   const [showLevelUp, setShowLevelUp] = useState(false);
-  const [bgClass, setBgClass] = useState("bg-gray-100");
   const badgeRef = useRef<HTMLDivElement>(null);
 
   const activeData = STEPS[currentStep];
-
-  // Dynamic Background System
-  useEffect(() => {
-    if (activeData.theme === 'red') setBgClass("bg-rose-50");
-    else if (activeData.theme === 'green') setBgClass("bg-emerald-50");
-    else if (activeData.theme === 'indigo') setBgClass("bg-indigo-50");
-    else if (activeData.theme === 'purple') setBgClass("bg-violet-50");
-    else setBgClass("bg-gray-50");
-  }, [currentStep, activeData.theme]);
 
   // Victory Sound Generator
   const playVictorySound = () => {
@@ -690,7 +682,6 @@ const Lesson1: React.FC = () => {
     const ctx = new AudioContext();
     const now = ctx.currentTime;
     
-    // Play a major chord arpeggio (C Major: C, E, G, C)
     const notes = [523.25, 659.25, 783.99, 1046.50];
     
     notes.forEach((freq, i) => {
@@ -725,7 +716,7 @@ const Lesson1: React.FC = () => {
     const x = (e.clientX - left) / width;
     const y = (e.clientY - top) / height;
     
-    const rotateX = (0.5 - y) * 30; // Stronger tilt for badge
+    const rotateX = (0.5 - y) * 30;
     const rotateY = (x - 0.5) * 30;
     
     badgeRef.current.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.1)`;
@@ -739,7 +730,7 @@ const Lesson1: React.FC = () => {
   // Game Logic
   const handleNext = () => {
     if (currentStep < STEPS.length - 1) {
-      setXp(prev => prev + 5); // Participation XP
+      setXp(prev => prev + 5);
       setCurrentStep(prev => prev + 1);
     } else {
       setShowLevelUp(true);
@@ -766,10 +757,7 @@ const Lesson1: React.FC = () => {
   if (showLevelUp) {
     return (
       <div className="fixed inset-0 h-[100dvh] w-screen overflow-hidden flex flex-col items-center justify-center bg-[#0F172A] relative text-white perspective-container z-[60]">
-        {/* Background Rays */}
         <div className="sunburst-ray"></div>
-        
-        {/* Confetti */}
         {Array.from({ length: 50 }).map((_, i) => (
           <div 
             key={i}
@@ -786,27 +774,18 @@ const Lesson1: React.FC = () => {
 
         <div className="relative z-10 text-center animate-pop-in">
           <h2 className="text-2xl font-bold text-gray-400 tracking-[0.5em] uppercase mb-8">Mission Accomplished</h2>
-          
-          {/* THE BADGE */}
           <div 
             className="badge-container w-80 h-96 mx-auto mb-10 cursor-pointer"
             onMouseMove={handleBadgeMove}
             onMouseLeave={handleBadgeLeave}
           >
             <div ref={badgeRef} className="w-full h-full relative transition-transform duration-100 ease-out">
-              {/* Badge Frame */}
               <div className="absolute inset-0 holographic-bg rounded-[40px] border-4 border-[#FDB931]/30 flex flex-col items-center justify-center p-8 overflow-hidden">
-                
-                {/* Shine effect */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent skew-x-12 translate-x-[-150%] animate-[shimmer_2.5s_infinite]"></div>
-
-                {/* Text Content */}
                 <div className="text-center">
                   <h1 className="text-5xl font-black mb-1 diamond-text tracking-tighter">BAND 9</h1>
                   <p className="text-sm font-bold text-[#FDB931] tracking-widest uppercase">Certified Master</p>
                 </div>
-
-                {/* Stats Grid inside Badge */}
                 <div className="grid grid-cols-2 gap-4 w-full mt-6 pt-6 border-t border-white/10">
                   <div className="text-center">
                     <div className="text-xs text-gray-400 uppercase">XP</div>
@@ -820,7 +799,6 @@ const Lesson1: React.FC = () => {
               </div>
             </div>
           </div>
-
           <button 
             onClick={() => window.location.reload()}
             className="group relative px-10 py-4 bg-white text-gray-900 rounded-full font-black text-lg tracking-wider shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 active:scale-95 transition-all overflow-hidden"
@@ -836,13 +814,19 @@ const Lesson1: React.FC = () => {
   }
 
   return (
-    <div className={`fixed inset-0 h-[100dvh] w-screen overflow-hidden transition-colors duration-1000 ease-in-out ${bgClass} font-sans`}>
+    <div className="fixed inset-0 h-[100dvh] w-screen overflow-hidden font-sans bg-gray-900">
       
-      {/* HUD (Heads Up Display) - Fixed Top */}
+      {/* Background Color Base */}
+      <div className={`absolute inset-0 w-full h-full transition-colors duration-1000 ${
+        activeData.theme === 'red' ? 'bg-[#2A1010]' : 
+        activeData.theme === 'green' ? 'bg-[#0F2A15]' : 
+        activeData.theme === 'indigo' ? 'bg-[#151730]' : 
+        activeData.theme === 'yellow' ? 'bg-[#2A2310]' : 'bg-[#1F2937]'
+      }`}></div>
+
+      {/* HUD (Heads Up Display) */}
       <div className="absolute top-0 left-0 w-full h-[60px] bg-white/95 backdrop-blur-md border-b border-gray-200/50 px-4 py-2 shadow-sm z-50 flex items-center">
-        <div className="w-full max-w-4xl mx-auto flex items-center justify-between">
-          
-          {/* Progress (Coffee Cup) */}
+        <div className="w-full max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4 flex-1">
             <div className="relative w-8 h-8 bg-gray-200 rounded-full overflow-hidden border-2 border-gray-300">
                <div 
@@ -855,8 +839,6 @@ const Lesson1: React.FC = () => {
               <p className="text-sm font-black text-gray-800 leading-none">{Math.round(((currentStep + 1) / STEPS.length) * 100)}%</p>
             </div>
           </div>
-
-          {/* Stats */}
           <div className="flex gap-6">
             <div className="text-center">
               <p className="text-xs font-bold text-gray-400 uppercase leading-none">XP</p>
@@ -869,13 +851,12 @@ const Lesson1: React.FC = () => {
               </p>
             </div>
           </div>
-
         </div>
       </div>
 
-      {/* Main Stage - Absolute Middle (Between Header and Footer) */}
+      {/* Main Stage */}
       <div className="absolute top-[60px] bottom-[80px] left-0 right-0 flex items-center justify-center p-2 sm:p-4 z-20 overflow-hidden">
-        <div className="w-full max-w-3xl h-full flex flex-col justify-center relative">
+        <div className="w-full max-w-7xl h-full flex flex-col justify-center relative">
           <div key={currentStep} className="w-full h-full flex flex-col justify-center">
             {activeData.type === 'content' ? (
               <FocusSlide 
@@ -904,9 +885,9 @@ const Lesson1: React.FC = () => {
         </div>
       </div>
 
-      {/* Navigation Controller - Fixed Bottom */}
+      {/* Footer Navigation */}
       <div className="absolute bottom-0 left-0 w-full h-[80px] bg-white border-t border-gray-200 z-50 flex items-center justify-center px-4">
-        <div className="w-full max-w-3xl flex justify-between items-center">
+        <div className="w-full max-w-7xl flex justify-between items-center">
           <button
             onClick={handlePrev}
             disabled={currentStep === 0}
