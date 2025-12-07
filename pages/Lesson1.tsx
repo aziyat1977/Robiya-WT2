@@ -660,6 +660,263 @@ const buildSteps = (): LessonStep[] => {
     explanation: "Option B replaces simple pronouns ('This', 'them') with specific nouns ('immense scale', 'corporations'), improving clarity and cohesion."
   });
 
+  // --- NEW SECTION: 2023-2024 EXAM TOPICS ---
+
+  addContent({
+    sectionTitle: "New Challenge",
+    sectionSubtitle: "2023-2024 Exam Topics",
+    label: "Surgical Analysis",
+    visualVariant: "target", 
+    content: "We will now apply the **Invisible Step** to recent exam questions. Identify the **trap** in the prompt before writing.",
+    theme: "red"
+  });
+
+  // TOPIC 1: MEDIA & NEWS
+  addContent({
+    sectionTitle: "Topic: Media (April 2024)",
+    sectionSubtitle: "The Invisible Step",
+    label: "Analysis",
+    visualVariant: "radar",
+    content: "**Question:** Some think national news is **more important** than international news... Discuss both sides.\n\n**The Trap:** The comparison word '**more important**'. You cannot just list benefits; you must compare values.",
+    theme: "blue",
+    vocab: [
+      { term: "prioritize", ru: "расставлять приоритеты", uz: "ustuvor qo'ymoq" },
+      { term: "interconnected", ru: "взаимосвязанный", uz: "o'zaro bog'liq" }
+    ]
+  });
+
+  // Ex 1
+  addQuiz({
+    question: "Vocab: Which verb collocations with 'local issues'?",
+    options: ["Impact local issues", "Cover local issues", "Broaden local issues"],
+    correctAnswer: 1,
+    explanation: "Journalists 'cover' (report on) issues. This is a standard media collocation."
+  });
+  // Ex 2
+  addQuiz({
+    question: "Trap Check: Is this a good plan? 'Para 1: National news is good. Para 2: International news is good.'",
+    options: ["True", "False"],
+    correctAnswer: 1,
+    explanation: "False. The prompt asks which is *more* important. You must argue relative value (e.g., X is crucial for Y, while Z is crucial for Q)."
+  });
+  // Ex 3
+  addQuiz({
+    question: "Planning: Which structure is best?",
+    options: ["List random facts about news", "Body 1: Why some prioritize National. Body 2: Why others value International. Conclusion: Weighted opinion."],
+    correctAnswer: 1,
+    explanation: "This structure ensures you cover 'Discuss Both Sides' and clearly present the conflict before giving your opinion."
+  });
+  // Ex 4
+  addQuiz({
+    question: "Ideation: Which argument is IRRELEVANT to 'Importance'?",
+    options: ["International news is often depressing.", "National news impacts daily laws/taxes.", "Global pandemics affect local safety."],
+    correctAnswer: 0,
+    explanation: "Whether news is sad or happy doesn't make it less 'important'. Focus on impact/necessity."
+  });
+  // Ex 5
+  addQuiz({
+    question: "Thesis: 'This essay will argue that domestic and global affairs are _________.'",
+    options: ["mutually exclusive", "interdependent / equally vital", "boring"],
+    correctAnswer: 1,
+    explanation: "A strong Band 9 thesis often finds the synthesis. In a global world, local and global affect each other."
+  });
+
+  // TOPIC 2: UNIFORMS
+  addContent({
+    sectionTitle: "Topic: Uniforms (Jan 2024)",
+    sectionSubtitle: "The Invisible Step",
+    label: "Analysis",
+    visualVariant: "clones",
+    content: "**Question:** Mandatory uniforms. Do advantages **outweigh** disadvantages?\n\n**The Trap:** '**Outweigh**'. You must explicitly state if benefits are *stronger* than drawbacks, not just list them.",
+    theme: "indigo",
+    vocab: [
+      { term: "mandatory", ru: "обязательный", uz: "majburiy" },
+      { term: "suppress", ru: "подавлять", uz: "bostirmoq" }
+    ]
+  });
+  // Ex 1
+  addQuiz({
+    question: "Vocab: Which is NOT a correct synonym for 'mandatory' in this context?",
+    options: ["Compulsory", "Obligatory", "Essential"],
+    correctAnswer: 2,
+    explanation: "'Essential' means needed/important. 'Mandatory' means required by rule/law. They are not the same."
+  });
+  // Ex 2
+  addQuiz({
+    question: "Ideation: 'Suppresses individuality and self-expression' is an...",
+    options: ["Advantage", "Disadvantage", "Neutral fact"],
+    correctAnswer: 1,
+    explanation: "This is the primary argument against uniforms."
+  });
+  // Ex 3
+  addQuiz({
+    question: "Structure: Which conclusion is better?",
+    options: ["There are pros and cons.", "While loss of expression is a drawback, the social equality provided is far more significant."],
+    correctAnswer: 1,
+    explanation: "You must weigh the sides. 'More significant' directly answers the 'Outweigh' instruction."
+  });
+  // Ex 4
+  addQuiz({
+    question: "Result Link: 'Uniforms remove visible economic differences...' -> Result?",
+    options: ["...therefore children can express themselves.", "...consequently, bullying based on clothing brands is reduced.", "...so it is cheaper."],
+    correctAnswer: 1,
+    explanation: "The logical result of removing visible wealth markers is a reduction in discrimination/bullying."
+  });
+  // Ex 5
+  addQuiz({
+    question: "Cohesion: 'Critics argue uniforms limit expression. _____, proponents claim school is for learning.'",
+    options: ["Furthermore", "However", "Therefore"],
+    correctAnswer: 1,
+    explanation: "You need a contrast marker to switch from Critics (Con) to Proponents (Pro)."
+  });
+
+  // TOPIC 3: AMBITION
+  addContent({
+    sectionTitle: "Topic: Ambition (Jan 2024)",
+    sectionSubtitle: "The Invisible Step",
+    label: "Analysis",
+    visualVariant: "scale",
+    content: "**Question:** 1) How important is it? 2) Is it positive or negative?\n\n**The Trap:** This is a **Two-Part Question**. You MUST answer both. Missing one limits you to Band 5.",
+    theme: "yellow",
+    vocab: [
+      { term: "prerequisite", ru: "предпосылка / необходимое условие", uz: "zaruriy shart" },
+      { term: "drive", ru: "стремление / драйв", uz: "intilish" }
+    ]
+  });
+  // Ex 1
+  addQuiz({
+    question: "Vocab: What does 'Ambition' mean here?",
+    options: ["Greed for money", "A strong desire and determination to achieve success", "Working overtime"],
+    correctAnswer: 1,
+    explanation: "Ambition is the internal drive, not just the act of working."
+  });
+  // Ex 2
+  addQuiz({
+    question: "Planning: How to structure the body paragraphs?",
+    options: ["BP1: Pros/Cons. BP2: Conclusion.", "BP1: Answer 'How important?'. BP2: Answer 'Positive or Negative?'."],
+    correctAnswer: 1,
+    explanation: "Address each question in the prompt in its own dedicated section for clarity."
+  });
+  // Ex 3
+  addQuiz({
+    question: "Ideation: Which word implies the STRONGEST level of importance?",
+    options: ["Optional", "Beneficial", "Prerequisite"],
+    correctAnswer: 2,
+    explanation: "A prerequisite is something that *must* happen. It is stronger than just 'beneficial'."
+  });
+  // Ex 4
+  addQuiz({
+    question: "Ideation: Valid negative argument?",
+    options: ["It makes people lazy.", "It can lead to burnout, unethical behavior, and neglect of relationships."],
+    correctAnswer: 1,
+    explanation: "Unchecked ambition often comes at a personal or ethical cost."
+  });
+  // Ex 5
+  addQuiz({
+    question: "Thesis: Select the best Two-Part thesis.",
+    options: ["Ambition is good.", "I believe ambition is a prerequisite for success, and fundamentally positive despite risks of burnout."],
+    correctAnswer: 1,
+    explanation: "This answers Q1 (Prerequisite/Important) and Q2 (Positive) clearly."
+  });
+
+  // TOPIC 4: HOLIDAYS
+  addContent({
+    sectionTitle: "Topic: Holidays (Feb 2023)",
+    sectionSubtitle: "The Invisible Step",
+    label: "Analysis",
+    visualVariant: "coins", 
+    content: "**Question:** 4 weeks holiday to make employees **better at work**.\n\n**The Trap:** The Reason. You must discuss if holidays improve **productivity/performance**, not just if they are fun.",
+    theme: "green",
+    vocab: [
+      { term: "productivity", ru: "продуктивность", uz: "ish unumdorligi" },
+      { term: "burnout", ru: "выгорание", uz: "holdan toyish" }
+    ]
+  });
+  // Ex 1
+  addQuiz({
+    question: "Vocab: Specific term for 'better at work'?",
+    options: ["Happier", "Increased Productivity / Efficiency", "Richer"],
+    correctAnswer: 1,
+    explanation: "Use business terminology like 'productivity' or 'performance' to show Lexical Resource."
+  });
+  // Ex 2
+  addQuiz({
+    question: "Relevance: Which argument supports the prompt's specific goal?",
+    options: ["Travel widens horizons.", "Rest allows the brain to recharge, resulting in higher focus and fewer errors."],
+    correctAnswer: 1,
+    explanation: "This directly links 'holiday' to 'work performance' (fewer errors)."
+  });
+  // Ex 3
+  addQuiz({
+    question: "Gap Fill: 'Mandating exactly four weeks may be _____ for small businesses.'",
+    options: ["wonderful", "financially unsustainable / impractical", "easy"],
+    correctAnswer: 1,
+    explanation: "This introduces a nuanced disagreement based on economic reality."
+  });
+  // Ex 4
+  addQuiz({
+    question: "Counter-Argument: Why might long holidays be bad for work?",
+    options: ["Employees get a tan.", "It creates a 'backlog' of work, causing stress before and after the break."],
+    correctAnswer: 1,
+    explanation: "If you come back to 1000 emails, your performance might actually drop due to stress."
+  });
+  // Ex 5
+  addQuiz({
+    question: "Structure: What should BP1 focus on?",
+    options: ["The history of holidays.", "The psychological link between Rest and Performance (Burnout prevention)."],
+    correctAnswer: 1,
+    explanation: "Start with the core agreement: Rest is generally good for work."
+  });
+
+  // TOPIC 5: WATER
+  addContent({
+    sectionTitle: "Topic: Water (Feb 2023)",
+    sectionSubtitle: "The Invisible Step",
+    label: "Analysis",
+    visualVariant: "plant", 
+    content: "**Question:** Right to use vs Government control (Limited Resource).\n\n**The Trap:** The Clash. Individual Liberty (I pay, I use) vs Collective Survival (Finite Resource).",
+    theme: "blue",
+    vocab: [
+      { term: "finite resource", ru: "исчерпаемый ресурс", uz: "cheklangan resurs" },
+      { term: "commodity", ru: "товар", uz: "tovar" }
+    ]
+  });
+  // Ex 1
+  addQuiz({
+    question: "Vocab: Complete the collocation 'Water ______'.",
+    options: ["Money", "Scarcity", "Fun"],
+    correctAnswer: 1,
+    explanation: "'Water Scarcity' is the standard term for lack of water."
+  });
+  // Ex 2
+  addQuiz({
+    question: "Ideation: What is the logic for 'Right to use'?",
+    options: ["People like swimming.", "If citizens pay for a commodity, they should have freedom to use it."],
+    correctAnswer: 1,
+    explanation: "The libertarian view treats water as a product you buy, not a shared gift."
+  });
+  // Ex 3
+  addQuiz({
+    question: "Ideation: What is the logic for 'Government Control'?",
+    options: ["Government likes power.", "Water is a shared survival necessity, not a luxury; unchecked use harms the community."],
+    correctAnswer: 1,
+    explanation: "The environmental view prioritizes collective survival over individual freedom."
+  });
+  // Ex 4
+  addQuiz({
+    question: "Conclusion: Is 'Water is important' a good conclusion?",
+    options: ["Yes", "No. It must resolve the 'Right vs Control' debate."],
+    correctAnswer: 1,
+    explanation: "You must decide: Does the government have the right to restrict freedom? (Yes, because survival supersedes liberty)."
+  });
+  // Ex 5
+  addQuiz({
+    question: "Cohesion: 'Some argue for liberty. ______, others insist on regulation.'",
+    options: ["Also", "In contrast / Conversely", "So"],
+    correctAnswer: 1,
+    explanation: "You need a strong contrast connector between the two opposing views."
+  });
+
   return steps;
 };
 
