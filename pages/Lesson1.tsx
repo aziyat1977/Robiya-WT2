@@ -21,7 +21,8 @@ interface LessonStep {
   content?: string | string[];
   theme?: string;
   vocab?: VocabItem[];
-  visualVariant?: VisualVariant; // Added visual variant type
+  visualVariant?: VisualVariant; 
+  videoUrl?: string;
   // Quiz props
   question?: string;
   options?: string[];
@@ -29,7 +30,7 @@ interface LessonStep {
   explanation?: string;
 }
 
-// -- DATA BUILDER (Same content, new structure) --
+// -- DATA BUILDER --
 const buildSteps = (): LessonStep[] => {
   const steps: LessonStep[] = [];
   // Helper
@@ -82,6 +83,7 @@ const buildSteps = (): LessonStep[] => {
     sectionSubtitle: "The Coffee Wars",
     label: "Task 2 Analysis",
     visualVariant: "blueprint",
+    videoUrl: "https://cdn.notebooklm.google.com/notebooklm-generated-audio-video/18a0030a-2487-4d7a-8531-18e3848b8989.mp4",
     content: "Welcome, Agent. Your target is a Band 9 Essay regarding the threat of global coffee chains. We will **deconstruct** the argument piece by piece to understand its **structure**.",
     theme: "indigo",
     vocab: [
@@ -89,6 +91,7 @@ const buildSteps = (): LessonStep[] => {
       { term: "structure", ru: "структура", uz: "tuzilish" }
     ]
   });
+  // Content Quizzes
   addQuiz({
     question: "What is the main goal of this mission?",
     options: ["To learn how to brew coffee", "To analyze a Band 9 essay structure", "To open a coffee shop"],
@@ -132,6 +135,7 @@ const buildSteps = (): LessonStep[] => {
       { term: "undeniable", ru: "неоспоримый", uz: "inkor etib bo'lmaydigan" }
     ]
   });
+  // Content Quizzes
   addQuiz({
     question: "What phenomenon has transformed city landscapes?",
     options: ["The decrease in coffee drinking", "The rapid spread of global coffee chains", "The ban on coffee"],
@@ -175,6 +179,7 @@ const buildSteps = (): LessonStep[] => {
       { term: "efficient", ru: "эффективный", uz: "samarali" }
     ]
   });
+  // Content Quizzes
   addQuiz({
     question: "How are Global chains described in this contrast?",
     options: ["Unique and soulful", "Standardized and impersonal", "Slow and messy"],
@@ -208,18 +213,19 @@ const buildSteps = (): LessonStep[] => {
     sectionSubtitle: "The Thesis",
     label: "Strong Opinion",
     visualVariant: "target",
-    content: "We **strongly agree** that their **aggressive** market presence poses a **profound** threat.",
+    content: "**I strongly agree** that their **aggressive** market presence poses a **profound** threat.",
     theme: "red",
     vocab: [
       { term: "profound", ru: "глубокий / серьезный", uz: "chuqur / jiddiy" },
       { term: "aggressive", ru: "агрессивный / напористый", uz: "tajovuzkor / shiddatli" }
     ]
   });
+  // Content Quizzes
   addQuiz({
     question: "What is the writer's position?",
     options: ["Neutral", "Strongly Agree", "Strongly Disagree"],
     correctAnswer: 1,
-    explanation: "The text explicitly states 'We strongly agree' that chains are a threat."
+    explanation: "The text explicitly states 'I strongly agree' that chains are a threat."
   });
   addQuiz({
     question: "How is the market presence of chains described?",
@@ -255,6 +261,7 @@ const buildSteps = (): LessonStep[] => {
       { term: "economic scale", ru: "экономический масштаб", uz: "iqtisodiy miqyos" }
     ]
   });
+  // Content Quizzes
   addQuiz({
     question: "What is the primary economic issue identified?",
     options: ["Bad coffee", "Unfair competitive advantage due to scale", "Lack of customers"],
@@ -295,6 +302,7 @@ const buildSteps = (): LessonStep[] => {
       { term: "drastically", ru: "радикально / резко", uz: "keskin / tubdan" }
     ]
   });
+  // Content Quizzes
   addQuiz({
     question: "How do chains lower their costs?",
     options: ["By stealing ingredients", "By buying in bulk", "By selling less coffee"],
@@ -335,6 +343,7 @@ const buildSteps = (): LessonStep[] => {
       { term: "financial power", ru: "финансовая мощь", uz: "moliyaviy qudrat" }
     ]
   });
+  // Content Quizzes
   addQuiz({
     question: "Why can't local cafes match the prices?",
     options: ["They don't want to", "They have thin profit margins", "They prefer charging more"],
@@ -375,6 +384,7 @@ const buildSteps = (): LessonStep[] => {
       { term: "eroding", ru: "разрушающий / размывающий", uz: "yemiruvchi" }
     ]
   });
+  // Content Quizzes
   addQuiz({
     question: "What is the cultural consequence of chain dominance?",
     options: ["Increased diversity", "Homogenization", "Better architecture"],
@@ -415,6 +425,7 @@ const buildSteps = (): LessonStep[] => {
       { term: "uniform", ru: "единообразный", uz: "bir xil / yagona shakldagi" }
     ]
   });
+  // Content Quizzes
   addQuiz({
     question: "How are chains described in terms of appearance/experience?",
     options: ["Distinct", "Uniform", "Random"],
@@ -455,6 +466,7 @@ const buildSteps = (): LessonStep[] => {
       { term: "community hub", ru: "центр сообщества", uz: "jamiyat markazi" }
     ]
   });
+  // Content Quizzes
   addQuiz({
     question: "What function do local cafes often serve?",
     options: ["Just a shop", "A community hub", "A factory"],
@@ -495,6 +507,7 @@ const buildSteps = (): LessonStep[] => {
       { term: "justify", ru: "оправдывать / обосновывать", uz: "oqlamoq / asoslamoq" }
     ]
   });
+  // Content Quizzes
   addQuiz({
     question: "What is the final verdict on the threat?",
     options: ["It is beneficial", "It is harmful", "It is negligible"],
@@ -535,6 +548,7 @@ const buildSteps = (): LessonStep[] => {
       { term: "character", ru: "характер / индивидуальность", uz: "xarakter / o'ziga xoslik" }
     ]
   });
+  // Content Quizzes
   addQuiz({
     question: "What is the condition for this negative future?",
     options: ["If we stop drinking coffee", "If the trend goes unchecked", "If we build more parks"],
@@ -751,8 +765,7 @@ const Lesson1: React.FC = () => {
 
   if (showLevelUp) {
     return (
-      <div className="h-screen w-screen overflow-hidden flex flex-col items-center justify-center bg-[#0F172A] relative text-white perspective-container">
-        
+      <div className="fixed inset-0 h-[100dvh] w-screen overflow-hidden flex flex-col items-center justify-center bg-[#0F172A] relative text-white perspective-container z-[60]">
         {/* Background Rays */}
         <div className="sunburst-ray"></div>
         
@@ -782,18 +795,13 @@ const Lesson1: React.FC = () => {
           >
             <div ref={badgeRef} className="w-full h-full relative transition-transform duration-100 ease-out">
               {/* Badge Frame */}
-              <div className="absolute inset-0 holographic-bg rounded-[40px] border-4 border-[#FDB931]/30 flex flex-col items-center justify-between p-8 overflow-hidden">
+              <div className="absolute inset-0 holographic-bg rounded-[40px] border-4 border-[#FDB931]/30 flex flex-col items-center justify-center p-8 overflow-hidden">
                 
                 {/* Shine effect */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent skew-x-12 translate-x-[-150%] animate-[shimmer_2.5s_infinite]"></div>
 
-                {/* Top Icon */}
-                <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg transform rotate-45 mt-4">
-                  <span className="text-4xl transform -rotate-45">☕</span>
-                </div>
-
                 {/* Text Content */}
-                <div className="text-center mt-8">
+                <div className="text-center">
                   <h1 className="text-5xl font-black mb-1 diamond-text tracking-tighter">BAND 9</h1>
                   <p className="text-sm font-bold text-[#FDB931] tracking-widest uppercase">Certified Master</p>
                 </div>
@@ -809,16 +817,7 @@ const Lesson1: React.FC = () => {
                     <div className="text-xl font-bold text-[#FFD700]">{streak}</div>
                   </div>
                 </div>
-                
-                {/* Stamp Animation */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-8 border-red-600 rounded-full flex items-center justify-center opacity-0 stamp-animate delay-500" style={{ animationDelay: '0.8s' }}>
-                  <span className="text-red-600 font-black text-2xl uppercase transform -rotate-12 tracking-widest">Verified</span>
-                </div>
-
               </div>
-              
-              {/* Back Glow */}
-              <div className="absolute -inset-10 bg-gradient-to-r from-[#FFD700] to-[#FDB931] blur-3xl opacity-20 -z-10 animate-pulse"></div>
             </div>
           </div>
 
@@ -837,36 +836,36 @@ const Lesson1: React.FC = () => {
   }
 
   return (
-    <div className={`h-screen w-screen overflow-hidden flex flex-col transition-colors duration-1000 ease-in-out ${bgClass} font-sans`}>
+    <div className={`fixed inset-0 h-[100dvh] w-screen overflow-hidden transition-colors duration-1000 ease-in-out ${bgClass} font-sans`}>
       
       {/* HUD (Heads Up Display) - Fixed Top */}
-      <div className="flex-none bg-white/80 backdrop-blur-md border-b border-gray-200/50 px-4 py-3 shadow-sm z-30">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+      <div className="absolute top-0 left-0 w-full h-[60px] bg-white/95 backdrop-blur-md border-b border-gray-200/50 px-4 py-2 shadow-sm z-50 flex items-center">
+        <div className="w-full max-w-4xl mx-auto flex items-center justify-between">
           
           {/* Progress (Coffee Cup) */}
           <div className="flex items-center gap-4 flex-1">
-            <div className="relative w-10 h-10 bg-gray-200 rounded-full overflow-hidden border-2 border-gray-300">
+            <div className="relative w-8 h-8 bg-gray-200 rounded-full overflow-hidden border-2 border-gray-300">
                <div 
                  className="absolute bottom-0 left-0 w-full bg-indigo-600 transition-all duration-500 liquid-wave"
                  style={{ height: `${((currentStep + 1) / STEPS.length) * 100}%` }}
                ></div>
             </div>
             <div className="hidden md:block">
-              <p className="text-xs font-bold text-gray-400 uppercase">Mission Progress</p>
-              <p className="text-sm font-black text-gray-800">{Math.round(((currentStep + 1) / STEPS.length) * 100)}%</p>
+              <p className="text-xs font-bold text-gray-400 uppercase leading-none">Progress</p>
+              <p className="text-sm font-black text-gray-800 leading-none">{Math.round(((currentStep + 1) / STEPS.length) * 100)}%</p>
             </div>
           </div>
 
           {/* Stats */}
           <div className="flex gap-6">
             <div className="text-center">
-              <p className="text-xs font-bold text-gray-400 uppercase">XP</p>
-              <p className="text-xl font-black text-indigo-600">{xp}</p>
+              <p className="text-xs font-bold text-gray-400 uppercase leading-none">XP</p>
+              <p className="text-lg font-black text-indigo-600 leading-none">{xp}</p>
             </div>
             <div className="text-center">
-              <p className="text-xs font-bold text-gray-400 uppercase">Streak</p>
-              <p className={`text-xl font-black ${streak > 2 ? 'text-orange-500 animate-pulse' : 'text-gray-600'}`}>
-                {streak} 🔥
+              <p className="text-xs font-bold text-gray-400 uppercase leading-none">Streak</p>
+              <p className={`text-lg font-black leading-none ${streak > 2 ? 'text-orange-500 animate-pulse' : 'text-gray-600'}`}>
+                {streak}
               </p>
             </div>
           </div>
@@ -874,10 +873,10 @@ const Lesson1: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Stage - Centered & Flexible */}
-      <div className="flex-1 flex items-center justify-center p-4 overflow-hidden relative">
-        <div className="w-full max-w-4xl">
-          <div key={currentStep}>
+      {/* Main Stage - Absolute Middle (Between Header and Footer) */}
+      <div className="absolute top-[60px] bottom-[80px] left-0 right-0 flex items-center justify-center p-2 sm:p-4 z-20 overflow-hidden">
+        <div className="w-full max-w-3xl h-full flex flex-col justify-center relative">
+          <div key={currentStep} className="w-full h-full flex flex-col justify-center">
             {activeData.type === 'content' ? (
               <FocusSlide 
                 {...activeData}
@@ -887,6 +886,7 @@ const Lesson1: React.FC = () => {
                 theme={activeData.theme || "indigo"}
                 animated={true}
                 visualVariant={activeData.visualVariant}
+                videoUrl={activeData.videoUrl}
                 onVocabLearned={handleVocabLearned}
               />
             ) : (
@@ -905,27 +905,28 @@ const Lesson1: React.FC = () => {
       </div>
 
       {/* Navigation Controller - Fixed Bottom */}
-      <div className="flex-none p-4 pb-6 bg-gradient-to-t from-white via-white/80 to-transparent z-40">
-        <div className="max-w-3xl mx-auto flex justify-between items-center">
+      <div className="absolute bottom-0 left-0 w-full h-[80px] bg-white border-t border-gray-200 z-50 flex items-center justify-center px-4">
+        <div className="w-full max-w-3xl flex justify-between items-center">
           <button
             onClick={handlePrev}
             disabled={currentStep === 0}
-            className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+            className={`px-4 py-3 rounded-xl flex items-center gap-2 font-bold transition-all ${
               currentStep === 0 
-                ? 'opacity-0 scale-50' 
-                : 'bg-white shadow-lg text-gray-600 hover:scale-110 active:scale-95 border border-gray-100'
+                ? 'opacity-0 pointer-events-none' 
+                : 'text-gray-600 hover:bg-gray-100 active:scale-95'
             }`}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+            <span className="hidden sm:inline">Prev</span>
           </button>
 
           <button
             onClick={handleNext}
-            className="group relative px-6 py-3 bg-gray-900 text-white rounded-xl shadow-xl overflow-hidden hover:scale-105 active:scale-95 transition-all duration-300"
+            className="group relative px-6 py-3 bg-gray-900 text-white rounded-xl shadow-lg overflow-hidden hover:scale-105 active:scale-95 transition-all duration-300 w-full sm:w-auto min-w-[120px]"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 shimmer-text"></div>
-            <span className="relative z-10 font-bold text-base tracking-widest uppercase flex items-center gap-2">
-              {currentStep === STEPS.length - 1 ? 'Finish' : 'Continue'}
+            <span className="relative z-10 font-bold text-base tracking-widest uppercase flex items-center justify-center gap-2">
+              {currentStep === STEPS.length - 1 ? 'Finish' : 'Next'}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
             </span>
           </button>

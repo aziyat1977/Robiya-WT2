@@ -24,45 +24,74 @@
       }
       body {
         font-family: var(--font-ui);
+        background-color: #0f172a; /* Fallback */
+        overflow: hidden; /* Prevent native scroll */
       }
       .font-essay {
         font-family: var(--font-essay);
       }
       
-      /* 3D Perspective Setup */
+      /* GLOBAL FILM GRAIN (Lightroom Texture) */
+      .film-grain {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 50;
+        opacity: 0.05;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      /* ATMOSPHERIC AURORA (Motion Design) */
+      @keyframes aurora {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      .bg-aurora {
+        background-size: 200% 200%;
+        animation: aurora 15s ease infinite;
+      }
+
+      /* 3D PERSPECTIVE CONTAINER */
       .perspective-container {
-        perspective: 1000px;
-      }
-      .card-3d {
-        transform-style: preserve-3d;
-        transition: transform 0.1s ease-out;
-      }
-      
-      /* Glassmorphism */
-      .glass-panel {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.5);
+        perspective: 1200px;
       }
 
-      /* Animations */
-      @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
+      /* GOD RAYS (Volumetric Lighting) */
+      @keyframes rotate-rays {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
       }
-      .animate-float {
-        animation: float 6s ease-in-out infinite;
-      }
-      
-      @keyframes pop-in {
-        0% { transform: scale(0.9); opacity: 0; }
-        100% { transform: scale(1); opacity: 1; }
-      }
-      .animate-pop-in {
-        animation: pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      .god-rays {
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.03) 20deg, transparent 40deg, rgba(255,255,255,0.03) 60deg, transparent 80deg);
+        animation: rotate-rays 60s linear infinite;
+        pointer-events: none;
+        z-index: 0;
       }
 
+      /* KINETIC TEXT REVEAL (Motion Design) */
+      @keyframes reveal-up {
+        from { transform: translateY(100%); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      .word-mask {
+        overflow: hidden;
+        display: inline-block;
+        vertical-align: bottom;
+      }
+      .word-animate {
+        animation: reveal-up 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      }
+
+      /* SHIMMER & GLOW */
       @keyframes shimmer {
         0% { background-position: 200% 0; }
         100% { background-position: -200% 0; }
@@ -75,84 +104,48 @@
         animation: shimmer 3s linear infinite;
       }
 
+      /* LIQUID PHYSICS */
       @keyframes liquid-fill {
         0% { transform: translateY(0) rotate(0deg); }
-        50% { transform: translateY(-2px) rotate(2deg); }
+        50% { transform: translateY(-3px) rotate(1deg); }
         100% { transform: translateY(0) rotate(0deg); }
       }
       .liquid-wave {
-        animation: liquid-fill 3s ease-in-out infinite;
+        animation: liquid-fill 4s ease-in-out infinite;
       }
       
-      /* Gamification Particles */
-      @keyframes confetti {
-        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-        100% { transform: translateY(100px) rotate(720deg); opacity: 0; }
+      /* PARTICLES */
+      @keyframes float-particle {
+        0% { transform: translateY(0) translateX(0); opacity: 0; }
+        10% { opacity: 1; }
+        100% { transform: translateY(-100px) translateX(20px); opacity: 0; }
       }
-      .confetti-piece {
+      .particle {
         position: absolute;
-        width: 10px;
-        height: 10px;
-        background: #FFD700;
-        animation: confetti 1s ease-out forwards;
-      }
-
-      /* BADGE EFFECTS */
-      .badge-container {
-        transform-style: preserve-3d;
-        transition: transform 0.2s ease-out;
-      }
-      
-      .holographic-bg {
-        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-      }
-
-      .gold-gradient {
-        background: linear-gradient(45deg, #FFD700, #FDB931, #FFD700, #FDB931);
-        background-size: 400% 400%;
-        animation: shimmer 3s ease infinite;
-      }
-      
-      .diamond-text {
-        background: linear-gradient(to bottom, #ffffff 0%, #e1e1e1 50%, #f6f6f6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        filter: drop-shadow(0px 2px 0px rgba(0,0,0,0.3));
-      }
-      
-      @keyframes sunburst {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-      .sunburst-ray {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 200vw;
-        height: 200vw;
-        background: repeating-conic-gradient(from 0deg, rgba(255,215,0,0.05) 0deg 10deg, transparent 10deg 20deg);
-        transform-origin: center;
-        animation: sunburst 60s linear infinite;
-        z-index: -1;
+        background: white;
+        border-radius: 50%;
         pointer-events: none;
+        animation: float-particle 4s linear infinite;
       }
 
-      @keyframes stamp {
-        0% { transform: scale(3) rotate(-15deg); opacity: 0; }
-        50% { transform: scale(0.9) rotate(-15deg); opacity: 1; }
-        70% { transform: scale(1.1) rotate(-15deg); }
-        100% { transform: scale(1) rotate(-15deg); opacity: 1; }
+      /* UTILITIES */
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 
+          0 25px 50px -12px rgba(0, 0, 0, 0.15),
+          inset 0 0 20px rgba(255, 255, 255, 0.5); /* Inner Glow */
       }
-      .stamp-animate {
-        animation: stamp 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+      
+      .text-shadow-sm {
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
       }
     </style>
   </head>
   <body>
     <div id="root"></div>
+    <div class="film-grain"></div>
   </body>
 </html>

@@ -15,8 +15,9 @@ interface FocusSlideProps {
   theme: string;
   vocab?: VocabItem[];
   animated?: boolean;
-  visualVariant?: VisualVariant; // New prop
-  onVocabLearned?: () => void; // Callback for XP
+  visualVariant?: VisualVariant;
+  videoUrl?: string;
+  onVocabLearned?: () => void;
 }
 
 const FocusSlide: React.FC<FocusSlideProps> = ({ 
@@ -28,29 +29,33 @@ const FocusSlide: React.FC<FocusSlideProps> = ({
   vocab = [],
   animated = false,
   visualVariant,
+  videoUrl,
   onVocabLearned
 }) => {
   const [stage, setStage] = useState(animated ? 0 : 100);
   const [activeLang, setActiveLang] = useState<'ru' | 'uz' | null>(null);
+  const [cursorPos, setCursorPos] = useState({ x: 50, y: 50 });
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // 3D Tilt Logic
+  // CINEMATIC CURSOR TRACKING
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
     const { left, top, width, height } = cardRef.current.getBoundingClientRect();
-    const x = (e.clientX - left) / width;
-    const y = (e.clientY - top) / height;
+    const x = e.clientX - left;
+    const y = e.clientY - top;
     
-    // Calculate rotation (max 5 degrees)
-    const rotateX = (0.5 - y) * 10;
-    const rotateY = (x - 0.5) * 10;
+    setCursorPos({ x: (x / width) * 100, y: (y / height) * 100 });
+
+    const rotateX = (0.5 - (y / height)) * 3;
+    const rotateY = ((x / width) - 0.5) * 3;
     
-    cardRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+    cardRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.005, 1.005, 1.005)`;
   };
 
   const handleMouseLeave = () => {
     if (!cardRef.current) return;
     cardRef.current.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+    setCursorPos({ x: 50, y: 50 });
   };
 
   useEffect(() => {
@@ -60,45 +65,50 @@ const FocusSlide: React.FC<FocusSlideProps> = ({
     }
     setStage(0);
     const timeouts: ReturnType<typeof setTimeout>[] = [];
-    let delay = 300;
+    let delay = 100;
 
     timeouts.push(setTimeout(() => setStage(1), delay)); // Header
     delay += 300;
     timeouts.push(setTimeout(() => setStage(2), delay)); // Label
-    delay += 300;
+    delay += 200;
+    
+    // Video delay
+    if (videoUrl) {
+      timeouts.push(setTimeout(() => setStage(2.5), delay));
+      delay += 300;
+    }
     
     const contentArray = Array.isArray(content) ? content : [content];
     contentArray.forEach((_, index) => {
       timeouts.push(setTimeout(() => setStage(3 + index), delay));
-      delay += 500; // Time to read
+      delay += 300;
     });
 
     const vocabStart = 3 + contentArray.length;
     timeouts.push(setTimeout(() => setStage(vocabStart), delay));
 
     return () => timeouts.forEach(clearTimeout);
-  }, [content, animated]);
+  }, [content, animated, videoUrl]);
 
-  // Color Mapping for Themes
   const themeColors: Record<string, string> = {
-    indigo: 'from-indigo-500 to-purple-600',
-    red: 'from-rose-500 to-red-600',
-    blue: 'from-blue-500 to-cyan-500',
-    green: 'from-emerald-500 to-teal-600',
-    yellow: 'from-amber-400 to-orange-500',
-    purple: 'from-violet-500 to-fuchsia-600',
+    indigo: 'from-indigo-500 via-purple-500 to-indigo-600',
+    red: 'from-rose-500 via-red-500 to-orange-600',
+    blue: 'from-blue-500 via-cyan-500 to-teal-500',
+    green: 'from-emerald-500 via-green-500 to-lime-600',
+    yellow: 'from-amber-400 via-orange-400 to-yellow-500',
+    purple: 'from-violet-500 via-fuchsia-500 to-purple-600',
   };
-
-  const accentColor = themeColors[theme] || themeColors.indigo;
+  const accentGradient = themeColors[theme] || themeColors.indigo;
 
   const renderContent = (text: string) => {
     if (!vocab.length) return renderMarkdown(text);
-    
     let parts: (string | React.ReactNode)[] = [text];
+    
     vocab.forEach((v, vIdx) => {
       const newParts: (string | React.ReactNode)[] = [];
       parts.forEach(part => {
         if (typeof part === 'string') {
+          // Use regex to keep delimiters
           const split = part.split(v.term);
           split.forEach((s, i) => {
             newParts.push(s);
@@ -109,7 +119,7 @@ const FocusSlide: React.FC<FocusSlideProps> = ({
                   term={v.term} 
                   ru={v.ru} 
                   uz={v.uz} 
-                  accent={accentColor}
+                  accent={accentGradient}
                   onLearn={onVocabLearned}
                 />
               );
@@ -125,124 +135,178 @@ const FocusSlide: React.FC<FocusSlideProps> = ({
   };
 
   const renderMarkdown = (text: string, keyPrefix: any = 'txt') => (
-    <React.Fragment key={keyPrefix}>
-      {text.split('**').map((part, i) => 
-        i % 2 === 1 ? <strong key={i} className={`font-black text-transparent bg-clip-text bg-gradient-to-r ${accentColor}`}>{part}</strong> : part
-      )}
-    </React.Fragment>
+    <span key={keyPrefix} className="inline-block">
+      {text.split(' ').map((word, i) => {
+        // Handle punctuation attached to bold text (e.g., "**Word**.")
+        const match = word.match(/(\*\*.*?\*\*)(.*)/);
+        let content = word;
+        let suffix = "";
+        
+        if (match) {
+           content = match[1];
+           suffix = match[2];
+        }
+        
+        const isBold = content.includes('**');
+        const cleanWord = content.replace(/\*\*/g, '');
+        
+        return (
+          <span key={i} className="inline-block overflow-hidden align-bottom mr-1.5">
+             <span className={`inline-block word-animate ${isBold ? `font-black text-transparent bg-clip-text bg-gradient-to-r ${accentGradient}` : ''}`} style={{ animationDelay: `${i * 0.02}s` }}>
+               {cleanWord}{suffix}
+             </span>
+          </span>
+        );
+      })}
+    </span>
   );
 
   const contentArray = Array.isArray(content) ? content : [content];
 
   return (
     <div className="flex items-center justify-center py-2 perspective-container w-full h-full relative">
+      
+      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none overflow-hidden">
+         <div className="god-rays"></div>
+      </div>
+
       <div 
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="w-full relative transition-transform duration-200 ease-out"
+        className="w-full relative transition-transform duration-100 ease-out z-10 flex flex-col justify-center h-full"
       >
-        {/* Background Glow */}
-        <div className={`absolute -inset-4 bg-gradient-to-r ${accentColor} opacity-20 blur-xl rounded-[2rem] transition-all duration-1000 ${stage > 0 ? 'scale-100' : 'scale-90'}`}></div>
+        <div className={`absolute -inset-1 bg-gradient-to-r ${accentGradient} opacity-30 blur-2xl rounded-[2rem] transition-all duration-1000 ${stage > 0 ? 'scale-100' : 'scale-90'}`}></div>
 
-        {/* Main Card */}
-        <div className="relative glass-panel rounded-2xl p-6 md:p-8 shadow-xl overflow-hidden bg-white/60 min-h-[60vh] md:min-h-[50vh] flex flex-col">
-          
-          {/* Decorative shapes */}
-          <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${accentColor} opacity-10 rounded-bl-full transition-transform duration-1000 ${stage > 0 ? 'translate-x-0' : 'translate-x-full'}`} />
-
-          {/* Translation Controls (Top Right) */}
-          {vocab.length > 0 && (
-            <div className="absolute top-4 left-4 md:left-auto md:right-4 flex gap-2 z-30">
-              <button 
-                onClick={(e) => { e.stopPropagation(); setActiveLang(activeLang === 'ru' ? null : 'ru'); }}
-                className={`px-3 py-1 rounded-lg text-xs font-bold shadow-sm transition-all border border-white/50 ${activeLang === 'ru' ? 'bg-indigo-600 text-white scale-105' : 'bg-white/80 text-gray-600 hover:bg-white'}`}
-              >
-                Ru
-              </button>
-              <button 
-                onClick={(e) => { e.stopPropagation(); setActiveLang(activeLang === 'uz' ? null : 'uz'); }}
-                className={`px-3 py-1 rounded-lg text-xs font-bold shadow-sm transition-all border border-white/50 ${activeLang === 'uz' ? 'bg-indigo-600 text-white scale-105' : 'bg-white/80 text-gray-600 hover:bg-white'}`}
-              >
-                Uz
-              </button>
-            </div>
-          )}
-
-          {/* Translation Pop-up Panel */}
-          {activeLang && vocab.length > 0 && (
-            <div className="absolute top-14 left-4 md:left-auto md:right-4 bg-white/95 p-5 rounded-2xl shadow-2xl z-40 w-64 backdrop-blur-xl border border-white/50 animate-pop-in">
-              <h4 className="text-[10px] font-black uppercase text-gray-400 mb-3 tracking-widest border-b border-gray-100 pb-2">
-                {activeLang === 'ru' ? 'Russian Translation' : 'Uzbek Translation'}
-              </h4>
-              <div className="space-y-3">
-                {vocab.map((v, i) => (
-                  <div key={i} className="flex flex-col">
-                    <span className="font-bold text-gray-800 text-sm">{v.term}</span>
-                    <span className={`text-base font-serif font-medium leading-tight text-transparent bg-clip-text bg-gradient-to-r ${accentColor}`}>
-                      {activeLang === 'ru' ? v.ru : v.uz}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* HEADER SECTION WITH 3D VISUAL */}
-          <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-4 mb-6 relative z-10">
-             
-             {/* Text Header */}
-             <div className={`text-center md:text-left transition-all duration-700 transform flex-1 ${stage >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
-               <h3 className="text-xs font-bold tracking-[0.2em] uppercase text-gray-400 mb-2">{sectionTitle}</h3>
-               <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight shimmer-text mb-3">
-                 {sectionSubtitle || label}
-               </h1>
-               {/* Label Chip */}
-               <div className={`inline-flex px-4 py-1.5 rounded-full bg-gradient-to-r ${accentColor} text-white font-bold shadow-md shadow-indigo-500/30 items-center gap-2 text-sm transition-all duration-700 delay-100 ${stage >= 2 ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
-                 <span>✨</span>
-                 {label}
+        {/* MAIN GLASS CARD - MAX HEIGHT FULL to respect container */}
+        <div 
+          className="relative glass-panel rounded-xl p-5 md:p-6 overflow-hidden flex flex-col max-h-full"
+          style={{
+            background: `
+              radial-gradient(
+                600px circle at ${cursorPos.x}% ${cursorPos.y}%, 
+                rgba(255,255,255,0.15),
+                transparent 40%
+              ),
+              rgba(255, 255, 255, 0.75)
+            `
+          }}
+        >
+          {/* HEADER SECTION - Compact */}
+          <div className="flex items-start justify-between gap-2 mb-2 relative z-10 flex-none">
+             <div className="flex-1">
+               <div className={`transition-all duration-700 ${stage >= 1 ? 'opacity-100' : 'opacity-0'}`}>
+                  <h3 className="text-[9px] font-black tracking-[0.2em] uppercase text-gray-400 mb-0.5">
+                    {sectionTitle}
+                  </h3>
+               </div>
+               
+               <div className={`transition-all duration-700 delay-100 ${stage >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
+                 <h1 className="text-xl md:text-2xl font-extrabold text-gray-900 leading-tight shimmer-text">
+                   {sectionSubtitle || label}
+                 </h1>
+               </div>
+               
+               <div className={`mt-1 inline-flex transition-all duration-500 delay-200 ${stage >= 2 ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
+                 <div className={`px-2 py-0.5 rounded-full bg-gradient-to-r ${accentGradient} text-white text-[10px] font-bold shadow-md flex items-center gap-1`}>
+                   <span>✨</span> {label}
+                 </div>
                </div>
              </div>
 
-             {/* 3D Visual Asset (Hidden on very small screens if needed, or scaled) */}
              {visualVariant && (
-               <div className={`transition-all duration-1000 transform ${stage >= 1 ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-50 rotate-12'}`}>
+               <div className={`flex-none transform transition-all duration-1000 ${stage >= 1 ? 'opacity-100 scale-75 translate-x-0' : 'opacity-0 scale-50 translate-x-10'}`}>
                   <LessonVisual variant={visualVariant} />
                </div>
              )}
           </div>
 
-          {/* Content (Stage 3+) */}
-          <div className="space-y-4 flex-grow flex flex-col justify-center">
-            {contentArray.map((line, idx) => (
-              <div 
-                key={idx}
-                className={`font-essay text-xl md:text-2xl leading-relaxed text-gray-800 transition-all duration-700 transform ${stage >= 3 + idx ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}
-              >
-                <div className="flex gap-4">
-                  <div className={`w-1.5 min-h-full rounded-full bg-gradient-to-b ${accentColor} opacity-40 flex-shrink-0`}></div>
-                  <p>{renderContent(line)}</p>
-                </div>
+          {/* CONTENT SECTION - Flexible */}
+          <div className="space-y-2 flex-grow flex flex-col relative z-10 overflow-y-auto pr-1 overscroll-contain">
+            
+            {/* VIDEO PLAYER */}
+            {videoUrl && (
+              <div className={`w-full rounded-lg overflow-hidden shadow-lg mb-4 flex-none relative z-20 group transition-all duration-700 ${stage >= 2.5 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                <video 
+                  src={videoUrl} 
+                  controls 
+                  autoPlay 
+                  muted
+                  playsInline
+                  loop 
+                  className="w-full h-auto max-h-[35vh] object-cover bg-black"
+                />
               </div>
-            ))}
+            )}
+
+            <div className="flex flex-col justify-center">
+              {contentArray.map((line, idx) => (
+                <div 
+                  key={idx}
+                  className={`font-essay text-base md:text-lg leading-snug text-gray-800 transition-opacity duration-500 ${stage >= 3 + idx ? 'opacity-100' : 'opacity-0'}`}
+                >
+                  {stage >= 3 + idx && (
+                    <div className="flex gap-2 group mb-2">
+                      <div className={`w-0.5 mt-1 rounded-full bg-gradient-to-b ${accentGradient} opacity-30`}></div>
+                      <div>{renderContent(line)}</div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Vocab Prompt (Last Stage) */}
-          {vocab.length > 0 && (
-             <div className={`mt-auto pt-6 border-t border-gray-200/50 transition-all duration-1000 transform ${stage >= (3 + contentArray.length) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-               <p className="text-center text-gray-400 text-xs font-semibold uppercase tracking-widest animate-pulse">
-                 Hover over highlighted words or click Ru/Uz for help
-               </p>
-             </div>
-          )}
+          {/* FOOTER AREA: Translation Buttons & Hint */}
+          <div className={`flex-none mt-2 pt-2 border-t border-gray-200/50 flex justify-between items-center transition-all duration-1000 ${stage >= (3 + contentArray.length) ? 'opacity-100' : 'opacity-0'}`}>
+             <p className="text-gray-400 text-[8px] font-bold uppercase tracking-[0.2em] animate-pulse">
+               Interact with keywords
+             </p>
 
+             {/* Translation UI - Bottom Right */}
+             {vocab.length > 0 && (
+                <div className="relative z-30">
+                  <div className="flex gap-1">
+                    {['ru', 'uz'].map((lang) => (
+                      <button 
+                        key={lang}
+                        onClick={(e) => { e.stopPropagation(); setActiveLang(activeLang === lang ? null : lang as 'ru' | 'uz'); }}
+                        className={`
+                          px-2 py-1 rounded-full text-[9px] font-black uppercase tracking-wider shadow-sm transition-all
+                          ${activeLang === lang 
+                            ? `bg-gradient-to-r ${accentGradient} text-white` 
+                            : 'bg-white/80 text-gray-500 hover:bg-gray-100'
+                          }
+                        `}
+                      >
+                        {lang}
+                      </button>
+                    ))}
+                  </div>
+                  
+                  {/* Translation Panel Popup */}
+                  {activeLang && (
+                    <div className="absolute bottom-full right-0 mb-2 bg-white/95 p-3 rounded-lg shadow-xl z-40 w-48 backdrop-blur-xl border border-white/60 animate-pop-in origin-bottom-right">
+                      <div className="space-y-2 max-h-40 overflow-y-auto">
+                        {vocab.map((v, i) => (
+                          <div key={i}>
+                            <span className="font-bold text-gray-900 text-xs block mb-0.5">{v.term}</span>
+                            <span className={`text-xs block font-essay text-transparent bg-clip-text bg-gradient-to-r ${accentGradient}`}>
+                              {activeLang === 'ru' ? v.ru : v.uz}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+             )}
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-// Interactive Tooltip Component
 const VocabTooltip: React.FC<{term: string, ru: string, uz: string, accent: string, onLearn?: () => void}> = ({term, ru, uz, accent, onLearn}) => {
   const [isHovered, setIsHovered] = useState(false);
   const [collected, setCollected] = useState(false);
@@ -259,22 +323,25 @@ const VocabTooltip: React.FC<{term: string, ru: string, uz: string, accent: stri
     <span 
       onMouseEnter={handleEnter}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative inline-block cursor-help mx-1 group"
+      className="relative inline-block cursor-help mx-0.5 group align-baseline"
     >
-      <span className={`relative z-10 font-bold border-b-2 border-dashed border-gray-400 group-hover:border-transparent transition-colors duration-300 ${collected ? 'text-green-600' : 'text-gray-800'}`}>
+      <span 
+        className={`relative z-10 font-bold border-b border-dashed border-gray-300 group-hover:border-transparent transition-all duration-300 px-0.5 rounded ${collected ? 'text-emerald-700 bg-emerald-50/50' : 'text-gray-900'}`}
+      >
         {term}
-        <span className={`absolute inset-0 bg-gradient-to-r ${accent} opacity-0 group-hover:opacity-20 rounded -z-10 transition-opacity`}></span>
+        <span className={`absolute inset-0 bg-gradient-to-r ${accent} opacity-0 group-hover:opacity-10 rounded -z-10 transition-opacity`}></span>
       </span>
       
-      {/* Tooltip Popup */}
-      <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-40 bg-gray-900 text-white p-3 rounded-xl shadow-2xl transition-all duration-300 pointer-events-none z-50 ${isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
+      {/* TOOLTIP */}
+      <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-32 bg-gray-900/95 text-white p-2 rounded-lg shadow-xl backdrop-blur-md pointer-events-none z-50 ${isHovered ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-95'}`}>
         <div className="text-center">
-          <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Translation</div>
-          <div className="font-bold text-base mb-1">{ru}</div>
-          <div className="text-xs text-gray-300 italic">{uz}</div>
-          {collected && <div className="mt-1 text-xs font-bold text-green-400 animate-bounce">+10 XP</div>}
+          <div className="font-bold text-xs mb-1 diamond-text">{term}</div>
+          <div className="h-px w-full bg-white/20 my-1"></div>
+          <div className="text-[10px] space-y-1">
+             <div className="flex justify-between"><span className="text-gray-400">RU</span> <span>{ru}</span></div>
+             <div className="flex justify-between"><span className="text-gray-400">UZ</span> <span>{uz}</span></div>
+          </div>
         </div>
-        <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-2 border-4 border-transparent border-t-gray-900"></div>
       </div>
     </span>
   );
