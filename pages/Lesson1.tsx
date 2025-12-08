@@ -1113,7 +1113,7 @@ const Lesson1: React.FC = () => {
 
       {/* Main Stage */}
       <div className="absolute top-[60px] bottom-[80px] left-0 right-0 flex items-center justify-center p-2 sm:p-4 z-20 overflow-hidden">
-        <div className="w-full max-w-7xl h-full flex flex-col justify-center relative">
+        <div className="w-full max-w-4xl h-full flex flex-col justify-center relative">
           <div key={currentStep} className="w-full h-full flex flex-col justify-center">
             {activeData.type === 'content' ? (
               <FocusSlide 
